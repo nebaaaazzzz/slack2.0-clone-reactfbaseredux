@@ -16,13 +16,24 @@ import {
   AiFillFolderOpen,
   AiTwotoneSave,
 } from "react-icons/ai";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collection } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Sidebar() {
+  const [user] = useAuthState(auth);
+  const [channels, loading] = useCollection(collection(db, "rooms"), {
+    snapshotListenOptions: {
+      includeMetadataChanges: false,
+    },
+  });
+  if (loading) return <h1>loading</h1>;
   return (
     <SidebarContainer>
       <SidebarHeader>
         <SidebarInfo>
-          <h2>neboyi</h2>
+          <h2>{user?.displayName}</h2>
           <h3>
             <BsFillRecordFill className="record-icon" /> neba{" "}
           </h3>
@@ -66,13 +77,23 @@ function Sidebar() {
       <SidebarOption title="channels" Icon={MdOutlineKeyboardArrowDown} />
       <hr />
       <SidebarOption title="channel" addChannelOption Icon={VscAdd} />
+      {channels.docs.map((channel) => {
+        return (
+          <SidebarOption
+            key={channel.id}
+            id={channel.id}
+            title={channel.data().name}
+          />
+        );
+      })}
     </SidebarContainer>
   );
 }
 const SidebarHeader = styled.div`
   display: flex;
+  margin-top: 10px;
   border-bottom: 1px solid #49274b;
-  padding: 13px;
+  padding: 20px 10px;
   > .create-icon {
     padding: 8px;
     color: #49274b;

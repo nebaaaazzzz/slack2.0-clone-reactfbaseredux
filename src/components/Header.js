@@ -1,15 +1,17 @@
 import React from "react";
-import { IoSend } from "react-icons/io";
-import { RxAvatar } from "react-icons/rx";
 import { MdAccessTime } from "react-icons/md";
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
 import { GiHelp } from "react-icons/gi";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 function Header() {
+  const [user] = useAuthState(auth);
+  console.log(user.photoURL);
   return (
     <HeaderContainer>
       <HeaderLeft>
-        <HeaderAvatar size={30} />
+        <img alt={user?.displayName} src={user?.photoURL} />
         <MdAccessTime className="access-time" />
       </HeaderLeft>
       <HeaderSearch>
@@ -24,6 +26,7 @@ function Header() {
 }
 const HeaderContainer = styled.div`
   display: flex;
+
   position: fixed;
   width: 100%;
   align-items: center;
@@ -41,12 +44,15 @@ const HeaderLeft = styled.div`
     margin-left: auto;
     margin-right: 30px;
   }
-`;
-const HeaderAvatar = styled(RxAvatar)`
-  &:hover {
+  > img {
+    width: 50px !important;
+    object-fit: contain !important;
+  }
+  > img:hover {
     opacity: 0.8;
   }
 `;
+
 const HeaderRight = styled.div`
   flex: 0.3;
   display: flex;
