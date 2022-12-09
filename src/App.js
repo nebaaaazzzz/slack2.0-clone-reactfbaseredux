@@ -8,7 +8,7 @@ import Login from "./pages/login.page";
 import { auth } from "./firebase";
 function App() {
   const [user, loading] = useAuthState(auth);
-  console.log(process.env);
+
   if (loading) {
     return (
       <p
